@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交互式图表可视化工具</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>交互式图表可视化工具</h1>
+        </header>
+
+        <div class="control-panel">
+            <div class="chart-selector">
+                <label for="chartType">选择图表类型:</label>
+                <select id="chartType">
+                    <option value="line">折线图</option>
+                    <option value="bar">柱状图</option>
+                    <option value="stackedBar">堆积柱状图</option>
+                    <option value="horizontalBar">条形图</option>
+                    <option value="stackedHorizontalBar">堆积条形图</option>
+                    <option value="histogram">直方图</option>
+                    <option value="pie">饼图</option>
+                    <option value="doughnut">圆环图</option>
+                    <option value="scatter">散点图</option>
+                    <option value="bubble">气泡图</option>
+                    <option value="boxplot">箱形图</option>
+                    <option value="radar">雷达图</option>
+                    <option value="errorBar">误差棒图</option>
+                </select>
+            </div>
+            
+            <div class="data-editor">
+                <h3>数据编辑</h3>
+                <div class="data-inputs">
+                    <div class="input-group">
+                        <label for="dataLabels">标签:</label>
+                        <input type="text" id="dataLabels" placeholder="例如: 一月,二月,三月">
+                    </div>
+                    <div class="input-group">
+                        <label for="dataValues">数值:</label>
+                        <input type="text" id="dataValues" placeholder="例如: 10,20,30">
+                    </div>
+                    <div class="input-group">
+                        <label for="chartTitle">图表标题:</label>
+                        <input type="text" id="chartTitle" placeholder="输入图表标题">
+                    </div>
+                </div>
+                <button id="updateChart" class="btn-primary">更新图表</button>
+                <button id="resetData" class="btn-secondary">重置数据</button>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-wrapper">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

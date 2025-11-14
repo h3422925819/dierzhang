@@ -138,25 +138,28 @@ button {
 
 .chart-container {
     background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
+    padding: 20px;
     border-radius: 15px;
     margin-bottom: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    min-height: 600px;
+    min-height: 400px;
+    max-height: 500px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .chart-wrapper {
     flex: 1;
-    min-height: 500px;
+    min-height: 300px;
+    max-height: 400px;
     position: relative;
 }
 
 #myChart {
     width: 100% !important;
     height: 100% !important;
-    max-height: none;
+    max-height: 100%;
 }
 
 

@@ -97,8 +97,7 @@ function optimizeDataForChartType(data, chartType) {
     
     switch (chartType) {
         case 'boxplot':
-        case 'errorBar':
-            // 为箱线图和误差棒图生成更多数据点以显示分布
+            // 为箱线图生成更多数据点以显示分布
             if (data.values.length < 10) {
                 const originalData = [...data.values];
                 const mean = originalData.reduce((a, b) => a + b, 0) / originalData.length;
@@ -109,6 +108,19 @@ function optimizeDataForChartType(data, chartType) {
                     optimizedData.values.push(Math.max(0, randomValue));
                 }
                 
+                while (optimizedData.labels.length < optimizedData.values.length) {
+                    optimizedData.labels.push(`数据${optimizedData.labels.length + 1}`);
+                }
+            }
+            break;
+            
+        case 'errorBar':
+            // 误差棒图只使用用户输入的数据，不自动生成额外数据
+            if (data.values.length < 2) {
+                // 如果数据不足，至少需要2个数据点
+                while (optimizedData.values.length < 2) {
+                    optimizedData.values.push(Math.max(1, (optimizedData.values.length + 1) * 5));
+                }
                 while (optimizedData.labels.length < optimizedData.values.length) {
                     optimizedData.labels.push(`数据${optimizedData.labels.length + 1}`);
                 }
@@ -438,7 +450,9 @@ function getChartConfig(data, chartType) {
                 data: histogramData.frequencies,
                 backgroundColor: colors.map(color => color),
                 borderColor: colors.map(color => color),
-                borderWidth: 2
+                borderWidth: 0,
+                barPercentage: 1.0,
+                categoryPercentage: 1.0
             }];
             baseConfig.options.scales = {
                 y: {
@@ -467,7 +481,7 @@ function getChartConfig(data, chartType) {
                 x: {
                     title: {
                         display: true,
-                        text: '区间',
+                        text: '数据区间',
                         font: {
                             size: 14,
                             weight: 'bold'
@@ -480,10 +494,10 @@ function getChartConfig(data, chartType) {
                     },
                     ticks: {
                         font: {
-                            size: 12,
+                            size: 11,
                             weight: 'bold'
                         },
-                        padding: 10
+                        padding: 5
                     }
                 }
             };
@@ -495,20 +509,20 @@ function getChartConfig(data, chartType) {
                 data: data.values,
                 backgroundColor: colors,
                 borderColor: '#fff',
-                borderWidth: 1,
-                hoverOffset: 6
+                borderWidth: 0.3,
+                hoverOffset: 1
             }];
             baseConfig.options.plugins = {
                 title: {
                     display: true,
                     text: data.title,
                     font: {
-                        size: 14,
+                        size: 8,
                         weight: 'bold'
                     },
                     padding: {
-                        top: 10,
-                        bottom: 10
+                        top: 1,
+                        bottom: 1
                     }
                 },
                 legend: {
@@ -516,24 +530,26 @@ function getChartConfig(data, chartType) {
                     position: 'right',
                     labels: {
                         font: {
-                            size: 10,
+                            size: 6,
                             weight: 'bold'
                         },
-                        padding: 6,
-                        boxWidth: 10,
+                        padding: 1,
+                        boxWidth: 3,
                         usePointStyle: true
                     }
                 }
             };
-            // 调整饼图大小和位置
+            // 进一步减小饼图大小
             baseConfig.options.layout = {
                 padding: {
-                    top: 8,
-                    right: 8,
-                    bottom: 8,
-                    left: 8
+                    top: 1,
+                    right: 1,
+                    bottom: 1,
+                    left: 1
                 }
             };
+            // 减小饼图半径
+            baseConfig.options.cutout = '0%';
             break;
             
         case 'doughnut':
@@ -542,20 +558,20 @@ function getChartConfig(data, chartType) {
                 data: data.values,
                 backgroundColor: colors,
                 borderColor: '#fff',
-                borderWidth: 1,
-                hoverOffset: 6
+                borderWidth: 0.3,
+                hoverOffset: 1
             }];
             baseConfig.options.plugins = {
                 title: {
                     display: true,
                     text: data.title,
                     font: {
-                        size: 14,
+                        size: 8,
                         weight: 'bold'
                     },
                     padding: {
-                        top: 10,
-                        bottom: 10
+                        top: 1,
+                        bottom: 1
                     }
                 },
                 legend: {
@@ -563,24 +579,26 @@ function getChartConfig(data, chartType) {
                     position: 'right',
                     labels: {
                         font: {
-                            size: 10,
+                            size: 6,
                             weight: 'bold'
                         },
-                        padding: 6,
-                        boxWidth: 10,
+                        padding: 1,
+                        boxWidth: 3,
                         usePointStyle: true
                     }
                 }
             };
-            // 调整环形图大小和位置
+            // 进一步减小环形图大小
             baseConfig.options.layout = {
                 padding: {
-                    top: 8,
-                    right: 8,
-                    bottom: 8,
-                    left: 8
+                    top: 1,
+                    right: 1,
+                    bottom: 1,
+                    left: 1
                 }
             };
+            // 减小环形图洞大小
+            baseConfig.options.cutout = '30%';
             break;
             
         case 'scatter':
@@ -695,52 +713,56 @@ function getChartConfig(data, chartType) {
                 baseConfig.data.datasets = [{
                     label: '关键指标评分',
                     data: data.values,
-                backgroundColor: 'rgba(79, 70, 229, 0.3)',
-                borderColor: '#4f46e5',
-                borderWidth: 2,
-                pointBackgroundColor: '#4f46e5',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#4f46e5',
-                pointRadius: 3,
-                pointHoverRadius: 6
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderColor: '#4f46e5',
+                    borderWidth: 1,
+                    pointBackgroundColor: '#4f46e5',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#4f46e5',
+                    pointRadius: 1,
+                    pointHoverRadius: 2
                 }];
             }
             baseConfig.options.scales = {
                 r: {
                     beginAtZero: true,
-                    suggestedMax: Math.max(...data.values) * 1.2,
+                    suggestedMax: Math.max(...data.values) * 1.05,
                     ticks: {
-                        stepSize: Math.max(1, Math.ceil(Math.max(...data.values) / 5)),
+                        stepSize: Math.max(1, Math.ceil(Math.max(...data.values) / 8)),
                         font: {
-                            size: 8,
+                            size: 6,
                             weight: 'bold'
                         },
-                        backdropColor: 'rgba(255, 255, 255, 0.8)'
+                        backdropColor: 'rgba(255, 255, 255, 0.5)',
+                        backdropPadding: 0
                     },
                     grid: {
-                        color: 'rgba(0, 0, 0, 0.1)',
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        lineWidth: 0.2,
                         circular: true
                     },
                     angleLines: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        lineWidth: 0.2
                     },
                     pointLabels: {
                         font: {
-                            size: 9,
+                            size: 7,
                             weight: 'bold'
                         },
-                        padding: 5
+                        padding: 0.5,
+                        color: '#374151'
                     }
                 }
             };
-            // 调整雷达图大小和位置
+            // 进一步减小雷达图大小
             baseConfig.options.layout = {
                 padding: {
-                    top: 6,
-                    right: 6,
-                    bottom: 6,
-                    left: 6
+                    top: 1,
+                    right: 1,
+                    bottom: 1,
+                    left: 1
                 }
             };
             break;

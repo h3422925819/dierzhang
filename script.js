@@ -5,7 +5,7 @@ let myChart;
 let currentData = {
     labels: ['产品A', '产品B', '产品C', '产品D', '产品E', '产品F'],
     values: [12, 19, 3, 15, 8, 22],
-    title: '产品销售额对比 (已更新v2)'
+    title: '产品销售额对比'
 };
 
 // 初始化
